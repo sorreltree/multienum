@@ -18,7 +18,7 @@ class MultiEnum(int):
     :ivar str name: The default (first) name defined for the given value
 
     >>> class SampleEnum(MultiEnum):
-    ...   _members = (("zero", "zip", "zéro", "cero"),
+    ...   _members = (("zero", "zip", "zero", "cero"),
     ...               ("one", "ace", "une", "uno"),
     ...               ("two", "deuce", "deux", "dos"))
     ...   _fields = ('english', 'slang', 'french', 'spanish')
