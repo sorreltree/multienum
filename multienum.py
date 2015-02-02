@@ -29,10 +29,10 @@ class MultiEnum(int):
     first positional parameter.  ``x is MultiEnum(a, x)`` will not be true,
     even if ``a`` and ``x`` are equal.
 
-    By default, the second value in the tuple (first value after the int
-    value) will be returned if the value is cast as a string (using the str()
-    function, for instance).  For compatability with the types in the enum
-    module, the same value will be returned using the 'name' attribute.
+    By default, the first in each individual enumerated tuple will be returned
+    if the value is cast as a string (using the str() function, for instance).
+    For compatability with the types in the enum module, the same value will
+    be returned using the 'name' attribute.
 
     >>> class SampleEnum(MultiEnum):
     ...   _members = (("zero", "zip", "zéro", "cero"),
