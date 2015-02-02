@@ -19,12 +19,13 @@ number of attributes of the object for converting it to different names.
 Usage
 -----
 
-Subclasses should define ``_members``, which is a tuple of tuples. [#]_ Every
-member of ``_members`` should be a string containing a name which equates to
-the enumerated value.  The value will be inferred from the member's position
-in the tuple (equal to the subscript). Optionally, a subclass may define
-``_fields``, a tuple of field names which correspond to the order the
-enumeration names appear in within the ``_members`` attribute.
+Subclasses should define the class attribute ``_members`` as a tuple of
+tuples. [#]_ Every member of ``_members`` should be a tuple of strings
+containing a name which equates to the enumerated value.  The value will be
+inferred from the member's position in the tuple (equal to the
+subscript). Optionally, a subclass may define ``_fields``, a tuple of field
+names which correspond to the order the enumeration names appear in within the
+``_members`` attribute.
 
 The enumerated value can be instantiated with a plain int value or with any of
 the names provided in ``_members``, either using the appropriate field name as
