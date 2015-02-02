@@ -1,8 +1,9 @@
 """MultiEnum class for enumerations for multiple equivalent names.
 
-Full documentation is in the doctext for the class itself.  At present, this
-has only been tested in CPython 3.4, although it should work for any recent
-version which allows subclassing of the core int type.
+Full documentation is in the README.  At present, this has only been tested in
+CPython 3.4, although it should work for any recent version which allows
+subclassing of the core int type.
+
 """
 
 # pylint: disable=W0212
@@ -10,29 +11,11 @@ version which allows subclassing of the core int type.
 class MultiEnum(int):
     """Enumeration type as int sublcass with support for multiple names
 
-    Implementation should define _members, which is a tuple of tuples.  The
-    first value of each of the internal tuples should be an integer (or else
-    it will be implicitly cast as such) and will be the stored value for the
-    instane.  All subsequent values will be names by which that int can be
-    called.  The value can be instantiated with any of the names provided
-    either using the appropriate field name as a keyword, or, so long as it is
-    unique across all fields, as an un-keyworded argument.  There is no test
-    to ensure that names are unique -- if a name appears multiple times in the
-    _members tuples, the behavior is undefined.
+    :cvar sequence _members: Sequence of members defining enumerated names
+    :cvar sequence _fields: Names corresponding to the position within the
+    member sequences
 
-    If more than one argument is given, either keyworded or not, a ValueError
-    exception will be raised unless all arguments resolve to the same value.
-
-    The ``MultiEnum`` type makes an attempt to be idempotent -- i.e., if ``x``
-    is an ``MultiEnum``, ``x is MultiEnum(x)`` should be true.  However, in
-    the case of multiple init values, idempotency is only preserved for the
-    first positional parameter.  ``x is MultiEnum(a, x)`` will not be true,
-    even if ``a`` and ``x`` are equal.
-
-    By default, the first in each individual enumerated tuple will be returned
-    if the value is cast as a string (using the str() function, for instance).
-    For compatability with the types in the enum module, the same value will
-    be returned using the 'name' attribute.
+    :ivar str name: The default (first) name defined for the given value
 
     >>> class SampleEnum(MultiEnum):
     ...   _members = (("zero", "zip", "zéro", "cero"),
@@ -87,7 +70,7 @@ class MultiEnum(int):
             retset.add(cls._resolve_value(val))
 
         for key, val in kwargs.items():
-            findex = cls._fields.index(key)
+            findex = tuple(cls._fields).index(key)
             retset.add(tuple(m[findex] for m in cls._members).index(val))
 
         if len(retset) > 1:

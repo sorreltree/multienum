@@ -19,18 +19,31 @@ number of attributes of the object for converting it to different names.
 Usage
 -----
 
-Implementation should define _members, which is a tuple of tuples.  The first
-value of each of the internal tuples should be an integer (or else it will be
-implicitly cast as such) and will be the stored value for the instane.  All
-subsequent values will be names by which that int can be called.  The value
-can be instantiated with any of the names provided either using the
-appropriate field name as a keyword, or, so long as it is unique across all
-fields, as an un-keyworded argument.  There is no test to ensure that names
-are unique -- if a name appears multiple times in the _members tuples, the
-behavior is undefined.
+Subclasses should define ``_members``, which is a tuple of tuples. [#]_ Every
+member of ``_members`` should be a string containing a name which equates to
+the enumerated value.  The value will be inferred from the member's position
+in the tuple (equal to the subscript). Optionally, a subclass may define
+``_fields``, a tuple of field names which correspond to the order the
+enumeration names appear in within the ``_members`` attribute.
 
-If more than one argument is given, either keyworded or not, a ValueError
-exception will be raised unless all arguments resolve to the same value.
+The enumerated value can be instantiated with a plain int value or with any of
+the names provided in ``_members``, either using the appropriate field name as
+a keyword or, so long as it is unique across all fields, as an un-keyworded
+argument.  There is no test to ensure that names are unique -- if a name
+appears multiple times in the ``_members`` tuples, the behavior is undefined.
+
+
+By default, the first in each individual enumerated tuple will be returned if
+the value is cast as a string (using the str() function, for instance).  For
+compatability with the types in the ``enum`` module, the same value will be
+returned using the ``name`` attribute.  The other names are available as a
+tuple in the ``_names`` attribute, and if ``_fields`` was defined, will be
+available as the value of attributes corresponding to the relevant field name
+in ``_fields``.
+
+If more than one argument is given on instantiation, either keyworded or not,
+a ``ValueError`` exception will be raised unless all arguments resolve to the
+same value.
 
 The ``MultiEnum`` type makes an attempt to be idempotent -- i.e., if ``x`` is
 an ``MultiEnum``, ``x is MultiEnum(x)`` should be true.  However, in the case
@@ -38,10 +51,12 @@ of multiple init values, idempotency is only preserved for the first
 positional parameter.  ``x is MultiEnum(a, x)`` will not be true, even if
 ``a`` and ``x`` are equal.
 
-By default, the first in each individual enumerated tuple will be returned if
-the value is cast as a string (using the str() function, for instance).  For
-compatability with the types in the enum module, the same value will be
-returned using the 'name' attribute.
+
+.. [#] Techincally, the ``_members`` attribute, all members of ``_members``,
+       and the ``_fields`` attribute can be any iterable sequence. I strongly
+       recommend tuples unless you have a reason not to, because in addition
+       to being lightweight and simple, they're immutable, which saves the
+       interpreter a lot of work.
 
 Example
 -------
