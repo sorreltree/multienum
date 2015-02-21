@@ -29,13 +29,13 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1b',
+    version='0.1',
 
-    description='A sample Python project',
+    description='Enumerator type supporting multiple equivalent names',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/pypa/sampleproject',
+    url='https://github.com/sorreltree/multienum',
 
     # Author details
     author='Michael T Bacon',
@@ -73,9 +73,7 @@ setup(
     # What does your project relate to?
     keywords='enumeration enum',
 
-    # You can just specify the packages manually here if your project is
-    # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+    py_modules = ['multienum'],
 
     test_suite = 'nose.collector',
     
