@@ -6,7 +6,7 @@ subclassing of the core int type.
 
 """
 
-# pylint: disable=W0212
+# pylint: disable=W0212,E1101
 
 class MultiEnum(int):
     """Enumeration type as int sublcass with support for multiple names
@@ -34,12 +34,6 @@ class MultiEnum(int):
     >>> val2 = SampleEnum(slang="deuce")
     >>> int(val2)
     2
-    >>> try:
-    ...   se = SampleEnum("two", spanish="cero")
-    ... except ValueError:
-    ...   print("Value mismatch")
-    Value mismatch
-
     """
     _members = None
     _fields = None
@@ -65,22 +59,20 @@ class MultiEnum(int):
         if cls._members is None:
             raise TypeError("No _members given at definition")
 
-        retset = set()
-        for val in args:
-            retset.add(cls._resolve_value(val))
+        if len(args) + len(kwargs) != 1:
+            raise TypeError(
+                "Enumeration creation takes exactly one parameter")
+
+        if args:
+            retval = cls._resolve_value(args[0])
 
         for key, val in kwargs.items():
             findex = tuple(cls._fields).index(key)
-            retset.add(tuple(m[findex] for m in cls._members).index(val))
+            retval = tuple(m[findex] for m in cls._members).index(val)
 
-        if len(retset) > 1:
-            raise ValueError(
-                "Init params to MultiEnum match different values")
-
-        retval = next(iter(retset))
         if type(retval) is not cls:
             retval = super(MultiEnum, cls).__new__(cls, retval)
-        retval._names = tuple(cls._members[int(retval)])
+            retval._names = tuple(cls._members[int(retval)])
         return retval
 
     def __getattr__(self, key):
@@ -88,13 +80,25 @@ class MultiEnum(int):
             raise AttributeError(
                 "Attribute missing: MultiEnum object does not have _fields defined")
 
-        try:
-            index = next(i for i in range(0, len(self._fields))
-                         if key == self._fields[i])
-        except StopIteration:
+        if key in self._fields:
+            index = self._fields.index(key)
+        else:
             raise AttributeError("Enumeration name '%s' not defined" % key)
 
         return self._names[index]
+
+    @classmethod
+    def _choices(cls):
+        (rs, re) = getattr(cls, '_choice_range', (0, len(cls._members)))
+        series = []
+        for f in getattr(cls, '_choice_fields',
+                         (cls._fields[0], cls._fields[1])):
+            if f == '_enum':
+                series.append(range(0, len(cls._members)))
+            else:
+                ind = cls._fields.index(f)
+                series.append(tuple(m[ind] for m in cls._members))
+        return tuple(zip(series[0][rs:re], series[1][rs:re]))
 
     @property
     def name(self):
@@ -106,3 +110,4 @@ class MultiEnum(int):
 
     def __repr__(self):
         return "'%s'"  % self._names[0]
+

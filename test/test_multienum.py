@@ -1,4 +1,4 @@
-# pylint: disable=E1101,W0612,W0232,F0401
+# pylint: disable=E1101,W0612,W0232,F0401,W0212
 
 import unittest
 import multienum
@@ -44,18 +44,32 @@ class MultiEnumTest(unittest.TestCase):
 
 
     def test_multi_args(self):
-        self.assertEqual(2, int(TestEnum(2, "two")))
-        self.assertRaises(ValueError, TestEnum, 2, "zero")
+        self.assertRaises(TypeError, TestEnum, 2, "two")
 
     def test_kwarg(self):
         enum = TestEnum(second="deuce")
         self.assertEqual(2, int(enum))
         self.assertEqual('two', str(enum))
         self.assertEqual('deuce', enum.second)
-        self.assertRaises(ValueError, TestEnum, 2, first="zero")
-        self.assertEqual(2, int(TestEnum(2, first="two")))
 
     def test_idempotent(self):
         s = TestEnum(2)
         self.assertIs(s, TestEnum(s))
-        self.assertIs(s, TestEnum(s, 2))
+
+    def test_choices_default(self):
+        self.assertEqual(TestEnum._choices(),
+                         tuple((m[0], m[1]) for m in TestEnum._members))
+
+    def test_choices_fields(self):
+        class TestEnumChoices(TestEnum):
+            _choice_fields = ('second', 'first')
+            _choice_range = (1,3)
+        self.assertEqual(TestEnumChoices._choices(),
+                         (('single', 'one'), ('deuce', 'two'),))
+
+    def test_choices_fields_value(self):
+        class TestEnumChoices(TestEnum):
+            _choice_fields = ('_enum', 'first')
+            _choice_range = (1,3)
+        self.assertEqual(TestEnumChoices._choices(),
+                         ((1, 'one'), (2, 'two')))
