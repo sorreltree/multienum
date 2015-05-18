@@ -34,6 +34,25 @@ class MultiEnum(int):
     >>> val2 = SampleEnum(slang="deuce")
     >>> int(val2)
     2
+
+    To facilitate use of MultiEnum with Django objects as an argument to the
+    'choices' parameter, the _choices() method is available as long as the
+    _fields attribute is defined on the class.  By default, the first two
+    parameters are returned.  To use a different set of fields, the
+    ;_choice_fields; parameter can be set as a two-tuple of field names.  To
+    use the enumerated value as one of the choices, use the virtual field name
+    '_enum'.  A reduced set of choices can also be picked by setting the
+    '_choice_range' attribute to a two-tuple with a start and end range (using
+    the same semantics as an array range start and end index).
+
+    >>> SampleEnum._choices()
+    (('zero', 'zip'), ('one', 'ace'), ('two', 'deuce'))
+    >>> class SampleChoicesEnum(SampleEnum):
+    ...   _choice_fields = ('_enum', 'french')
+    ...   _choice_range = (1,3)
+    >>> SampleChoicesEnum._choices()
+    ((1, 'une'), (2, 'deux'))
+
     """
     _members = None
     _fields = None
