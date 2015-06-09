@@ -73,3 +73,7 @@ class MultiEnumTest(unittest.TestCase):
             _choice_range = (1,3)
         self.assertEqual(TestEnumChoices._choices(),
                          ((1, 'one'), (2, 'two')))
+
+    def test_iterate_instance(self):
+        self.assertEqual(tuple(TestEnum(1)),
+                         (('first', 'one'), ('second', 'single')))

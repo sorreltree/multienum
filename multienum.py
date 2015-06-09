@@ -35,6 +35,13 @@ class MultiEnum(int):
     >>> int(val2)
     2
 
+    Each instance of MultiEnum also can be iterated as name, value tuples,
+    making the following construction possible:
+
+    >>> enum_dict = dict(SampleEnum('two'))
+    >>> enum_dict['french']
+    'deux'
+
     To facilitate use of MultiEnum with Django objects as an argument to the
     'choices' parameter, the _choices() method is available as long as the
     _fields attribute is defined on the class.  By default, the first two
@@ -123,6 +130,9 @@ class MultiEnum(int):
     def name(self):
         """Default name for number"""
         return self._names[0]
+
+    def __iter__(self):
+        return (z for z in zip(self._fields, self._members[self]))
 
     def __str__(self):
         return self._names[0]
