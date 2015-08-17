@@ -60,6 +60,12 @@ class MultiEnumTest(unittest.TestCase):
         self.assertEqual(TestEnum._choices(),
                          tuple((m[0], m[1]) for m in TestEnum._members))
 
+    def test_choices_no_fields(self):
+        class NoFieldsEnum(TestEnum):
+            _fields = None
+        self.assertEqual(NoFieldsEnum._choices(),
+                         tuple((m[0], m[1]) for m in TestEnum._members))
+
     def test_choices_fields(self):
         class TestEnumChoices(TestEnum):
             _choice_fields = ('second', 'first')

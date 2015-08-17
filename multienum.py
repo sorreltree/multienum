@@ -117,12 +117,12 @@ class MultiEnum(int):
     def _choices(cls):
         (rs, re) = getattr(cls, '_choice_range', (0, len(cls._members)))
         series = []
-        for f in getattr(cls, '_choice_fields',
-                         (cls._fields[0], cls._fields[1])):
+        fields = cls._fields or (0, 1)
+        for f in getattr(cls, '_choice_fields', (fields[0], fields[1])):
             if f == '_enum':
                 series.append(range(0, len(cls._members)))
             else:
-                ind = cls._fields.index(f)
+                ind = fields.index(f)
                 series.append(tuple(m[ind] for m in cls._members))
         return tuple(zip(series[0][rs:re], series[1][rs:re]))
 
