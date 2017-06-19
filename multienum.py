@@ -63,6 +63,7 @@ class MultiEnum(int):
     """
     _members = None
     _fields = None
+    _ignore_case = False
 
     @classmethod
     def _resolve_value(cls, val):
@@ -73,8 +74,13 @@ class MultiEnum(int):
             intval = val
         else:
             try:
-                intval = next(i for i in range(0, len(cls._members))
-                              if str(val) in cls._members[i])
+                if cls._ignore_case:
+                    intval = next(i for i in range(0, len(cls._members))
+                                  if str(val).casefold() in
+                                  [m.casefold() for m in cls._members[i]])
+                else:
+                    intval = next(i for i in range(0, len(cls._members))
+                                  if str(val) in cls._members[i])
             except StopIteration:
                 raise AttributeError(
                     "Enumeration name '%s' not in _members" % val)

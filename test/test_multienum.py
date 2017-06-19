@@ -83,3 +83,10 @@ class MultiEnumTest(unittest.TestCase):
     def test_iterate_instance(self):
         self.assertEqual(tuple(TestEnum(1)),
                          (('first', 'one'), ('second', 'single')))
+
+    def test_ignore_case(self):
+        class TestEnumIgnoreCase(TestEnum):
+            _ignore_case = True
+        two = TestEnumIgnoreCase('dEuCe')
+        self.assertIsInstance(two, multienum.MultiEnum)
+        self.assertEqual(two, 2)
